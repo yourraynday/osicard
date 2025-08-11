@@ -1,302 +1,227 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>推し活デジタルトレカ | 3カラム一覧 + 詳細ビュー</title>
-  <style>
-    :root{
-      --bg:#0b0f17; --card-bg:#111827; --ink:#e5e7eb; --muted:#9ca3af; --accent:#a78bfa;
-      --radius:16px; --shadow:0 8px 30px rgba(0,0,0,.35);
-      --ar-w:55; --ar-h:83; /* 画像比率 55:83 */
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; background:radial-gradient(1200px 700px at 70% -10%, #1f2937 0%, var(--bg) 60%);
-      color:var(--ink); font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans JP,Arial;
-      display:flex; flex-direction:column; align-items:center; padding:20px 10px 60px;
-    }
-    header{text-align:center; margin-bottom:16px;}
-    header h1{margin:0 0 6px; font-size:clamp(20px,3.2vw,34px)}
-    header p{margin:0; color:var(--muted); font-size:clamp(12px,1.8vw,14px)}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>推し活デジタルトレカ</title>
+<style>
+:root {
+  --bg: #0b0f17;
+  --card-bg: #111827;
+  --accent: #a78bfa;
+  --ink: #e5e7eb;
+  --muted: #9ca3af;
+  --shadow: 0 8px 30px rgba(0,0,0,.35);
+  --radius: 16px;
+  --ar-w: 55;
+  --ar-h: 83;
+}
 
-    .set{border-top:1px solid rgba(255,255,255,.06); padding-top:16px; margin-top:16px;}
-    .set:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+/* 全体レイアウト */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: radial-gradient(1200px 700px at 70% -10%, #1f2937 0%, var(--bg) 60%);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+}
 
-    /* 一覧表示 */
-    .section { width: 80%; max-width: 1400px; margin: 14px auto 22px; }
-    .section h2{margin:0 0 8px; font-size:clamp(18px,2.6vw,24px); letter-spacing:.02em}
-    .grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+h2 {
+  margin: 24px 0 8px;
+}
 
-    .thumb{ background:var(--card-bg); border-radius:12px; box-shadow:var(--shadow); overflow:hidden; cursor:pointer; position:relative }
-    .frame{ position:relative; width:100%; aspect-ratio: var(--ar-w) / var(--ar-h); }
-    .frame img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block }
-    .thumb .title{ font-size:12px; color:var(--muted); padding:6px 6px; border-top:1px solid rgba(255,255,255,.07) }
+/* 一覧表示の調整 */
+.section {
+  width: 80%;
+  max-width: 1400px;
+  margin: 14px auto 22px;
+}
 
-    /* 詳細ビュー（モーダル） */
-    .viewer{
-      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-      background:rgba(0,0,0,.55);
-      padding:max(6px, env(safe-area-inset-top)) 6px max(6px, env(safe-area-inset-bottom)) 6px;
-      z-index:50
-    }
-    .viewer.open{ display:flex }
-    .dialog{
-      background: var(--card-bg);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      max-width: min(900px, 92vw);
-      width: 100%;
-      max-height: 96svh;
-      height: auto;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      overflow: hidden;
-    }
-    .dialog header{ display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid rgba(255,255,255,.07) }
-    .dialog header h3{ margin:0; font-size:16px }
-    .close{
-      background:transparent; border:1px solid rgba(255,255,255,.2); color:#fff;
-      border-radius:8px; padding:6px 10px; cursor:pointer
-    }
+.set {
+  width: 100%;
+}
 
-    .content{ display:grid; grid-template-columns:1fr; gap:0; overflow:auto; -webkit-overflow-scrolling:touch }
-    .img-wrap{
-      position:relative; width:auto; margin:0 auto;
-      aspect-ratio: var(--ar-w) / var(--ar-h);
-      /* 画像は見切れないよう contain。幅いっぱいにはしない（max 92vw） */
-      max-width:92vw;
-    }
-    .img-wrap img{
-      position:absolute; inset:0; width:100%; height:100%; object-fit:contain;
-      transition:opacity .3s ease, transform .3s ease
-    }
-    .img-wrap .back{ opacity:0; transform:scale(1.0) }
-    .dialog.is-back .img-wrap .front{ opacity:0 }
-    .dialog.is-back .img-wrap .back{ opacity:1 }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  width: 90%;
+  margin: 0 auto;
+}
 
-    .panel{ padding:12px; border-top:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.04) }
-    .panel .meta-title{ font-weight:700; margin:0 0 8px }
-    .stats{ display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px }
-    .stat{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:6px }
-    .stat .k{ color:var(--muted); font-size:11px }
-    .stat .v{ font-size:13px }
-    .qr{ margin-top:8px; width:90px; height:90px; background:#fff; border-radius:8px; overflow:hidden }
-    .qr img{ width:100%; height:100%; object-fit:cover }
+.thumb {
+  cursor: pointer;
+}
 
-    .hint{ text-align:center; color:var(--muted); font-size:12px; padding:6px 0 10px }
+.thumb img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
 
-    /* PC/タブレットでの一覧横幅調整 */
-    @media (max-width: 1024px){
-      .section{ width:90%; max-width:none; }
-      .grid{ gap:10px; }
-    }
-    /* スマホでも3カラム維持＋余白圧縮、モーダルで見切れないよう調整 */
-    @media (max-width: 480px){
-      body{ padding:10px 4px 36px }
-      .grid{ gap:6px; }
-      .section{ margin:8px auto 16px }
-      .thumb .title{ font-size:11px; padding:5px }
-      .dialog{ max-width:100vw; max-height:100svh; border-radius:12px }
-      /* 画像はパネル分の高さをあらかじめ確保して、上下見切れ防止 */
-      .img-wrap{
-        height: calc(100svh - 48px /*header*/ - 22px /*hint*/ - 16px /*余白*/ - 200px /*panel想定*/);
-      }
-      .panel{ padding:10px; min-height:200px }
-    }
+/* 詳細ビュー */
+.viewer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
 
-    /* 背景スクロール抑止 */
-    body.no-scroll{ overflow:hidden; touch-action:none; }
-  </style>
+.viewer.active {
+  display: flex;
+}
+
+.dialog {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  max-width: min(900px, 92vw);
+  width: 100%;
+  max-height: 96svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+.img-wrap {
+  perspective: 1400px;
+  width: 100%;
+  aspect-ratio: var(--ar-w) / var(--ar-h);
+  position: relative;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .8s;
+}
+
+.card-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+
+.face img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+/* 情報パネル */
+.panel {
+  padding: 16px;
+  color: var(--ink);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: 12px;
+}
+
+/* モバイル最適化 */
+@media (max-width: 480px) {
+  .section {
+    width: 90%;
+  }
+  .grid {
+    gap: 6px;
+  }
+  .dialog {
+    max-width: 100vw;
+    max-height: 100svh;
+    border-radius: 12px;
+  }
+  .img-wrap {
+    height: calc(100svh - 48px - 22px - 16px - 200px);
+    aspect-ratio: var(--ar-w) / var(--ar-h);
+    width: auto;
+    max-width: 92vw;
+    margin: 0 auto;
+  }
+  .panel {
+    padding: 10px;
+    min-height: 200px;
+  }
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>推し活デジタルトレカ – 3カラム一覧 + 詳細ビュー</h1>
-    <p>サムネをタップ/クリック → モーダルで表⇄裏切替＋情報パネル</p>
-  </header>
 
-  <!-- ===== セット1（#001〜#012） ===== -->
-  <div class="set" id="set1">
-    <section class="section" aria-label="名前A"><h2>名前A</h2><div class="grid">
-      <article class="thumb" data-front="front-1.jpg" data-back="back-1.jpg" data-title="Oshi Name 1" data-id="001" data-rarity="Rare" data-color="Light Purple" data-extra="Unit: Madopi × Sumire"><div class="frame"><img src="front-1.jpg" alt="1 表" loading="lazy"></div><div class="title">#001</div></article>
-      <article class="thumb" data-front="front-2.jpg" data-back="back-2.jpg" data-title="Oshi Name 2" data-id="002" data-rarity="Normal" data-color="Blue" data-extra="Mood: Cool"><div class="frame"><img src="front-2.jpg" alt="2 表" loading="lazy"></div><div class="title">#002</div></article>
-      <article class="thumb" data-front="front-3.jpg" data-back="back-3.jpg" data-title="Oshi Name 3" data-id="003" data-rarity="Epic" data-color="Rose" data-extra="Theme: Shiny"><div class="frame"><img src="front-3.jpg" alt="3 表" loading="lazy"></div><div class="title">#003</div></article>
-      <article class="thumb" data-front="front-4.jpg" data-back="back-4.jpg" data-title="Oshi Name 4" data-id="004" data-rarity="Normal" data-color="Sea Blue" data-extra="Debut: 2024.10"><div class="frame"><img src="front-4.jpg" alt="4 表" loading="lazy"></div><div class="title">#004</div></article>
-    </div></section>
-    <section class="section" aria-label="名前B"><h2>名前B</h2><div class="grid">
-      <article class="thumb" data-front="front-5.jpg" data-back="back-5.jpg" data-title="Oshi Name 5" data-id="005" data-rarity="Rare" data-color="Gold" data-extra="Mood: Bright"><div class="frame"><img src="front-5.jpg" alt="5 表" loading="lazy"></div><div class="title">#005</div></article>
-      <article class="thumb" data-front="front-6.jpg" data-back="back-6.jpg" data-title="Oshi Name 6" data-id="006" data-rarity="Normal" data-color="Indigo" data-extra="Theme: Night"><div class="frame"><img src="front-6.jpg" alt="6 表" loading="lazy"></div><div class="title">#006</div></article>
-      <article class="thumb" data-front="front-7.jpg" data-back="back-7.jpg" data-title="Oshi Name 7" data-id="007" data-rarity="Epic" data-color="Royal Blue" data-extra="Unit: Madopi × Sumire"><div class="frame"><img src="front-7.jpg" alt="7 表" loading="lazy"></div><div class="title">#007</div></article>
-      <article class="thumb" data-front="front-8.jpg" data-back="back-8.jpg" data-title="Oshi Name 8" data-id="008" data-rarity="Normal" data-color="Mint" data-extra="Tag: #oshi"><div class="frame"><img src="front-8.jpg" alt="8 表" loading="lazy"></div><div class="title">#008</div></article>
-    </div></section>
-    <section class="section" aria-label="カプ名"><h2>カプ名</h2><div class="grid">
-      <article class="thumb" data-front="front-9.jpg" data-back="back-9.jpg" data-title="Pair 9" data-id="009" data-rarity="Rare" data-color="Violet" data-extra="Theme: Stage"><div class="frame"><img src="front-9.jpg" alt="9 表" loading="lazy"></div><div class="title">#009</div></article>
-      <article class="thumb" data-front="front-10.jpg" data-back="back-10.jpg" data-title="Pair 10" data-id="010" data-rarity="Normal" data-color="Pink" data-extra="Debut: 2022.05"><div class="frame"><img src="front-10.jpg" alt="10 表" loading="lazy"></div><div class="title">#010</div></article>
-      <article class="thumb" data-front="front-11.jpg" data-back="back-11.jpg" data-title="Pair 11" data-id="011" data-rarity="Epic" data-color="Silver" data-extra="Tag: #madopi"><div class="frame"><img src="front-11.jpg" alt="11 表" loading="lazy"></div><div class="title">#011</div></article>
-      <article class="thumb" data-front="front-12.jpg" data-back="back-12.jpg" data-title="Pair 12" data-id="012" data-rarity="Legend" data-color="Violet" data-extra="Debut: 2025.08"><div class="frame"><img src="front-12.jpg" alt="12 表" loading="lazy"></div><div class="title">#012</div></article>
-    </div></section>
-  </div>
-
-  <!-- ===== セット2（#013〜#024） ===== -->
-  <div class="set" id="set2">
-    <section class="section" aria-label="名前A"><h2>名前A</h2><div class="grid">
-      <article class="thumb" data-front="front-13.jpg" data-back="back-13.jpg" data-title="Oshi Name 13" data-id="013" data-rarity="Rare" data-color="Light Purple" data-extra="—"><div class="frame"><img src="front-13.jpg" alt="13 表" loading="lazy"></div><div class="title">#013</div></article>
-      <article class="thumb" data-front="front-14.jpg" data-back="back-14.jpg" data-title="Oshi Name 14" data-id="014" data-rarity="Normal" data-color="Blue" data-extra="—"><div class="frame"><img src="front-14.jpg" alt="14 表" loading="lazy"></div><div class="title">#014</div></article>
-      <article class="thumb" data-front="front-15.jpg" data-back="back-15.jpg" data-title="Oshi Name 15" data-id="015" data-rarity="Epic" data-color="Rose" data-extra="—"><div class="frame"><img src="front-15.jpg" alt="15 表" loading="lazy"></div><div class="title">#015</div></article>
-      <article class="thumb" data-front="front-16.jpg" data-back="back-16.jpg" data-title="Oshi Name 16" data-id="016" data-rarity="Normal" data-color="Sea Blue" data-extra="—"><div class="frame"><img src="front-16.jpg" alt="16 表" loading="lazy"></div><div class="title">#016</div></article>
-    </div></section>
-    <section class="section" aria-label="名前B"><h2>名前B</h2><div class="grid">
-      <article class="thumb" data-front="front-17.jpg" data-back="back-17.jpg" data-title="Oshi Name 17" data-id="017" data-rarity="Rare" data-color="Gold" data-extra="—"><div class="frame"><img src="front-17.jpg" alt="17 表" loading="lazy"></div><div class="title">#017</div></article>
-      <article class="thumb" data-front="front-18.jpg" data-back="back-18.jpg" data-title="Oshi Name 18" data-id="018" data-rarity="Normal" data-color="Indigo" data-extra="—"><div class="frame"><img src="front-18.jpg" alt="18 表" loading="lazy"></div><div class="title">#018</div></article>
-      <article class="thumb" data-front="front-19.jpg" data-back="back-19.jpg" data-title="Oshi Name 19" data-id="019" data-rarity="Epic" data-color="Royal Blue" data-extra="—"><div class="frame"><img src="front-19.jpg" alt="19 表" loading="lazy"></div><div class="title">#019</div></article>
-      <article class="thumb" data-front="front-20.jpg" data-back="back-20.jpg" data-title="Oshi Name 20" data-id="020" data-rarity="Normal" data-color="Mint" data-extra="—"><div class="frame"><img src="front-20.jpg" alt="20 表" loading="lazy"></div><div class="title">#020</div></article>
-    </div></section>
-    <section class="section" aria-label="カプ名"><h2>カプ名</h2><div class="grid">
-      <article class="thumb" data-front="front-21.jpg" data-back="back-21.jpg" data-title="Pair 21" data-id="021" data-rarity="Rare" data-color="Violet" data-extra="—"><div class="frame"><img src="front-21.jpg" alt="21 表" loading="lazy"></div><div class="title">#021</div></article>
-      <article class="thumb" data-front="front-22.jpg" data-back="back-22.jpg" data-title="Pair 22" data-id="022" data-rarity="Normal" data-color="Pink" data-extra="—"><div class="frame"><img src="front-22.jpg" alt="22 表" loading="lazy"></div><div class="title">#022</div></article>
-      <article class="thumb" data-front="front-23.jpg" data-back="back-23.jpg" data-title="Pair 23" data-id="023" data-rarity="Epic" data-color="Silver" data-extra="—"><div class="frame"><img src="front-23.jpg" alt="23 表" loading="lazy"></div><div class="title">#023</div></article>
-      <article class="thumb" data-front="front-24.jpg" data-back="back-24.jpg" data-title="Pair 24" data-id="024" data-rarity="Legend" data-color="Violet" data-extra="—"><div class="frame"><img src="front-24.jpg" alt="24 表" loading="lazy"></div><div class="title">#024</div></article>
-    </div></section>
-  </div>
-
-  <!-- ===== セット3（#025〜#036） ===== -->
-  <div class="set" id="set3">
-    <section class="section" aria-label="名前A"><h2>名前A</h2><div class="grid">
-      <article class="thumb" data-front="front-25.jpg" data-back="back-25.jpg" data-title="Oshi Name 25" data-id="025" data-rarity="Rare" data-color="Light Purple" data-extra="—"><div class="frame"><img src="front-25.jpg" alt="25 表" loading="lazy"></div><div class="title">#025</div></article>
-      <article class="thumb" data-front="front-26.jpg" data-back="back-26.jpg" data-title="Oshi Name 26" data-id="026" data-rarity="Normal" data-color="Blue" data-extra="—"><div class="frame"><img src="front-26.jpg" alt="26 表" loading="lazy"></div><div class="title">#026</div></article>
-      <article class="thumb" data-front="front-27.jpg" data-back="back-27.jpg" data-title="Oshi Name 27" data-id="027" data-rarity="Epic" data-color="Rose" data-extra="—"><div class="frame"><img src="front-27.jpg" alt="27 表" loading="lazy"></div><div class="title">#027</div></article>
-      <article class="thumb" data-front="front-28.jpg" data-back="back-28.jpg" data-title="Oshi Name 28" data-id="028" data-rarity="Normal" data-color="Sea Blue" data-extra="—"><div class="frame"><img src="front-28.jpg" alt="28 表" loading="lazy"></div><div class="title">#028</div></article>
-    </div></section>
-    <section class="section" aria-label="名前B"><h2>名前B</h2><div class="grid">
-      <article class="thumb" data-front="front-29.jpg" data-back="back-29.jpg" data-title="Oshi Name 29" data-id="029" data-rarity="Rare" data-color="Gold" data-extra="—"><div class="frame"><img src="front-29.jpg" alt="29 表" loading="lazy"></div><div class="title">#029</div></article>
-      <article class="thumb" data-front="front-30.jpg" data-back="back-30.jpg" data-title="Oshi Name 30" data-id="030" data-rarity="Normal" data-color="Indigo" data-extra="—"><div class="frame"><img src="front-30.jpg" alt="30 表" loading="lazy"></div><div class="title">#030</div></article>
-      <article class="thumb" data-front="front-31.jpg" data-back="back-31.jpg" data-title="Oshi Name 31" data-id="031" data-rarity="Epic" data-color="Royal Blue" data-extra="—"><div class="frame"><img src="front-31.jpg" alt="31 表" loading="lazy"></div><div class="title">#031</div></article>
-      <article class="thumb" data-front="front-32.jpg" data-back="back-32.jpg" data-title="Oshi Name 32" data-id="032" data-rarity="Normal" data-color="Mint" data-extra="—"><div class="frame"><img src="front-32.jpg" alt="32 表" loading="lazy"></div><div class="title">#032</div></article>
-    </div></section>
-    <section class="section" aria-label="カプ名"><h2>カプ名</h2><div class="grid">
-      <article class="thumb" data-front="front-33.jpg" data-back="back-33.jpg" data-title="Pair 33" data-id="033" data-rarity="Rare" data-color="Violet" data-extra="—"><div class="frame"><img src="front-33.jpg" alt="33 表" loading="lazy"></div><div class="title">#033</div></article>
-      <article class="thumb" data-front="front-34.jpg" data-back="back-34.jpg" data-title="Pair 34" data-id="034" data-rarity="Normal" data-color="Pink" data-extra="—"><div class="frame"><img src="front-34.jpg" alt="34 表" loading="lazy"></div><div class="title">#034</div></article>
-      <article class="thumb" data-front="front-35.jpg" data-back="back-35.jpg" data-title="Pair 35" data-id="035" data-rarity="Epic" data-color="Silver" data-extra="—"><div class="frame"><img src="front-35.jpg" alt="35 表" loading="lazy"></div><div class="title">#035</div></article>
-      <article class="thumb" data-front="front-36.jpg" data-back="back-36.jpg" data-title="Pair 36" data-id="036" data-rarity="Legend" data-color="Violet" data-extra="—"><div class="frame"><img src="front-36.jpg" alt="36 表" loading="lazy"></div><div class="title">#036</div></article>
-    </div></section>
-  </div>
-
-  <!-- ===== セット4（#037〜#048） ===== -->
-  <div class="set" id="set4">
-    <section class="section" aria-label="名前A"><h2>名前A</h2><div class="grid">
-      <article class="thumb" data-front="front-37.jpg" data-back="back-37.jpg" data-title="Oshi Name 37" data-id="037" data-rarity="Rare" data-color="Light Purple" data-extra="—"><div class="frame"><img src="front-37.jpg" alt="37 表" loading="lazy"></div><div class="title">#037</div></article>
-      <article class="thumb" data-front="front-38.jpg" data-back="back-38.jpg" data-title="Oshi Name 38" data-id="038" data-rarity="Normal" data-color="Blue" data-extra="—"><div class="frame"><img src="front-38.jpg" alt="38 表" loading="lazy"></div><div class="title">#038</div></article>
-      <article class="thumb" data-front="front-39.jpg" data-back="back-39.jpg" data-title="Oshi Name 39" data-id="039" data-rarity="Epic" data-color="Rose" data-extra="—"><div class="frame"><img src="front-39.jpg" alt="39 表" loading="lazy"></div><div class="title">#039</div></article>
-      <article class="thumb" data-front="front-40.jpg" data-back="back-40.jpg" data-title="Oshi Name 40" data-id="040" data-rarity="Normal" data-color="Sea Blue" data-extra="—"><div class="frame"><img src="front-40.jpg" alt="40 表" loading="lazy"></div><div class="title">#040</div></article>
-    </div></section>
-    <section class="section" aria-label="名前B"><h2>名前B</h2><div class="grid">
-      <article class="thumb" data-front="front-41.jpg" data-back="back-41.jpg" data-title="Oshi Name 41" data-id="041" data-rarity="Rare" data-color="Gold" data-extra="—"><div class="frame"><img src="front-41.jpg" alt="41 表" loading="lazy"></div><div class="title">#041</div></article>
-      <article class="thumb" data-front="front-42.jpg" data-back="back-42.jpg" data-title="Oshi Name 42" data-id="042" data-rarity="Normal" data-color="Indigo" data-extra="—"><div class="frame"><img src="front-42.jpg" alt="42 表" loading="lazy"></div><div class="title">#042</div></article>
-      <article class="thumb" data-front="front-43.jpg" data-back="back-43.jpg" data-title="Oshi Name 43" data-id="043" data-rarity="Epic" data-color="Royal Blue" data-extra="—"><div class="frame"><img src="front-43.jpg" alt="43 表" loading="lazy"></div><div class="title">#043</div></article>
-      <article class="thumb" data-front="front-44.jpg" data-back="back-44.jpg" data-title="Oshi Name 44" data-id="044" data-rarity="Normal" data-color="Mint" data-extra="—"><div class="frame"><img src="front-44.jpg" alt="44 表" loading="lazy"></div><div class="title">#044</div></article>
-    </div></section>
-    <section class="section" aria-label="カプ名"><h2>カプ名</h2><div class="grid">
-      <article class="thumb" data-front="front-45.jpg" data-back="back-45.jpg" data-title="Pair 45" data-id="045" data-rarity="Rare" data-color="Violet" data-extra="—"><div class="frame"><img src="front-45.jpg" alt="45 表" loading="lazy"></div><div class="title">#045</div></article>
-      <article class="thumb" data-front="front-46.jpg" data-back="back-46.jpg" data-title="Pair 46" data-id="046" data-rarity="Normal" data-color="Pink" data-extra="—"><div class="frame"><img src="front-46.jpg" alt="46 表" loading="lazy"></div><div class="title">#046</div></article>
-      <article class="thumb" data-front="front-47.jpg" data-back="back-47.jpg" data-title="Pair 47" data-id="047" data-rarity="Epic" data-color="Silver" data-extra="—"><div class="frame"><img src="front-47.jpg" alt="47 表" loading="lazy"></div><div class="title">#047</div></article>
-      <article class="thumb" data-front="front-48.jpg" data-back="back-48.jpg" data-title="Pair 48" data-id="048" data-rarity="Legend" data-color="Violet" data-extra="—"><div class="frame"><img src="front-48.jpg" alt="48 表" loading="lazy"></div><div class="title">#048</div></article>
-    </div></section>
-  </div>
-
-  <!-- ===== セット5（#049〜#060） ===== -->
-  <div class="set" id="set5">
-    <section class="section" aria-label="名前A"><h2>名前A</h2><div class="grid">
-      <article class="thumb" data-front="front-49.jpg" data-back="back-49.jpg" data-title="Oshi Name 49" data-id="049" data-rarity="Rare" data-color="Light Purple" data-extra="—"><div class="frame"><img src="front-49.jpg" alt="49 表" loading="lazy"></div><div class="title">#049</div></article>
-      <article class="thumb" data-front="front-50.jpg" data-back="back-50.jpg" data-title="Oshi Name 50" data-id="050" data-rarity="Normal" data-color="Blue" data-extra="—"><div class="frame"><img src="front-50.jpg" alt="50 表" loading="lazy"></div><div class="title">#050</div></article>
-      <article class="thumb" data-front="front-51.jpg" data-back="back-51.jpg" data-title="Oshi Name 51" data-id="051" data-rarity="Epic" data-color="Rose" data-extra="—"><div class="frame"><img src="front-51.jpg" alt="51 表" loading="lazy"></div><div class="title">#051</div></article>
-      <article class="thumb" data-front="front-52.jpg" data-back="back-52.jpg" data-title="Oshi Name 52" data-id="052" data-rarity="Normal" data-color="Sea Blue" data-extra="—"><div class="frame"><img src="front-52.jpg" alt="52 表" loading="lazy"></div><div class="title">#052</div></article>
-    </div></section>
-    <section class="section" aria-label="名前B"><h2>名前B</h2><div class="grid">
-      <article class="thumb" data-front="front-53.jpg" data-back="back-53.jpg" data-title="Oshi Name 53" data-id="053" data-rarity="Rare" data-color="Gold" data-extra="—"><div class="frame"><img src="front-53.jpg" alt="53 表" loading="lazy"></div><div class="title">#053</div></article>
-      <article class="thumb" data-front="front-54.jpg" data-back="back-54.jpg" data-title="Oshi Name 54" data-id="054" data-rarity="Normal" data-color="Indigo" data-extra="—"><div class="frame"><img src="front-54.jpg" alt="54 表" loading="lazy"></div><div class="title">#054</div></article>
-      <article class="thumb" data-front="front-55.jpg" data-back="back-55.jpg" data-title="Oshi Name 55" data-id="055" data-rarity="Epic" data-color="Royal Blue" data-extra="—"><div class="frame"><img src="front-55.jpg" alt="55 表" loading="lazy"></div><div class="title">#055</div></article>
-      <article class="thumb" data-front="front-56.jpg" data-back="back-56.jpg" data-title="Oshi Name 56" data-id="056" data-rarity="Normal" data-color="Mint" data-extra="—"><div class="frame"><img src="front-56.jpg" alt="56 表" loading="lazy"></div><div class="title">#056</div></article>
-    </div></section>
-    <section class="section" aria-label="カプ名"><h2>カプ名</h2><div class="grid">
-      <article class="thumb" data-front="front-57.jpg" data-back="back-57.jpg" data-title="Pair 57" data-id="057" data-rarity="Rare" data-color="Violet" data-extra="—"><div class="frame"><img src="front-57.jpg" alt="57 表" loading="lazy"></div><div class="title">#057</div></article>
-      <article class="thumb" data-front="front-58.jpg" data-back="back-58.jpg" data-title="Pair 58" data-id="058" data-rarity="Normal" data-color="Pink" data-extra="—"><div class="frame"><img src="front-58.jpg" alt="58 表" loading="lazy"></div><div class="title">#058</div></article>
-      <article class="thumb" data-front="front-59.jpg" data-back="back-59.jpg" data-title="Pair 59" data-id="059" data-rarity="Epic" data-color="Silver" data-extra="—"><div class="frame"><img src="front-59.jpg" alt="59 表" loading="lazy"></div><div class="title">#059</div></article>
-      <article class="thumb" data-front="front-60.jpg" data-back="back-60.jpg" data-title="Pair 60" data-id="060" data-rarity="Legend" data-color="Violet" data-extra="—"><div class="frame"><img src="front-60.jpg" alt="60 表" loading="lazy"></div><div class="title">#060</div></article>
-    </div></section>
-  </div>
-
-  <!-- ===== 詳細ビュー（モーダル） ===== -->
-  <div class="viewer" id="viewer" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
-      <header>
-        <h3 id="viewerTitle">カード詳細</h3>
-        <div>
-          <button class="close" id="flipBtn" title="表/裏切替">表⇄裏</button>
-          <button class="close" id="closeBtn" title="閉じる">閉じる</button>
-        </div>
-      </header>
-      <div class="content">
-        <div class="img-wrap" id="bigWrap" tabindex="0" aria-label="画像をクリックで表裏切替">
-          <img class="front" id="bigFront" src="" alt="表">
-          <img class="back"  id="bigBack"  src="" alt="裏">
-        </div>
-        <div class="panel">
-          <p class="meta-title" id="bigTitle">—</p>
-          <div class="stats">
-            <div class="stat"><div class="k">ID</div><div class="v" id="bigId">—</div></div>
-            <div class="stat"><div class="k">Rarity</div><div class="v" id="bigRarity">—</div></div>
-            <div class="stat"><div class="k">Color</div><div class="v" id="bigColor">—</div></div>
-            <div class="stat"><div class="k">Info</div><div class="v" id="bigExtra">—</div></div>
-          </div>
-          <div class="qr"><img id="bigQr" src="qr-sample.png" alt="QR"></div>
-        </div>
+<!-- 一覧画面 -->
+<div class="section">
+  <div class="set">
+    <h2>Oshi Name 1</h2>
+    <div class="grid">
+      <div class="thumb" data-front="front-1.jpg" data-back="back-1.jpg" data-info="デビュー:2024.06 / カラー:Light Purple"> 
+        <img src="front-1.jpg" alt="">
       </div>
-      <div class="hint">Escで閉じる / 画像 or 「表⇄裏」ボタンで切替</div>
+      <div class="thumb" data-front="front-2.jpg" data-back="back-2.jpg" data-info="デビュー:2023.05 / カラー:Blue"> 
+        <img src="front-2.jpg" alt="">
+      </div>
+      <div class="thumb" data-front="front-3.jpg" data-back="back-3.jpg" data-info="デビュー:2022.04 / カラー:Pink"> 
+        <img src="front-3.jpg" alt="">
+      </div>
     </div>
   </div>
+</div>
 
-  <script>
-    // サムネクリック → 詳細ビュー表示
-    const viewer = document.getElementById('viewer');
-    const dialog = viewer.querySelector('.dialog');
-    const bigFront = document.getElementById('bigFront');
-    const bigBack  = document.getElementById('bigBack');
-    const bigTitle = document.getElementById('bigTitle');
-    const bigId    = document.getElementById('bigId');
-    const bigRarity= document.getElementById('bigRarity');
-    const bigColor = document.getElementById('bigColor');
-    const bigExtra = document.getElementById('bigExtra');
-    const bigWrap  = document.getElementById('bigWrap');
+<!-- 詳細ビュー -->
+<div class="viewer" id="viewer">
+  <div class="dialog">
+    <button class="close-btn" id="closeBtn">×</button>
+    <div class="img-wrap">
+      <div class="card-inner" id="cardInner">
+        <div class="face front"><img id="viewFront" src=""></div>
+        <div class="face back"><img id="viewBack" src=""></div>
+      </div>
+    </div>
+    <div class="panel" id="infoPanel"></div>
+  </div>
+</div>
 
-    const openViewer = () => {
-      viewer.classList.add('open'); viewer.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll');
-    };
-    const closeViewer = () => {
-      viewer.classList.remove('open'); viewer.setAttribute('aria-hidden','true'); document.body.classList.remove('no-scroll');
-    };
+<script>
+document.querySelectorAll('.thumb').forEach(thumb => {
+  thumb.addEventListener('click', () => {
+    document.getElementById('viewer').classList.add('active');
+    document.getElementById('viewFront').src = thumb.dataset.front;
+    document.getElementById('viewBack').src = thumb.dataset.back;
+    document.getElementById('infoPanel').textContent = thumb.dataset.info;
+  });
+});
 
-    document.querySelectorAll('.thumb').forEach(t =>{
-      t.addEventListener('click', ()=>{
-        bigFront.src = t.dataset.front; bigBack.src = t.dataset.back;
-        bigTitle.textContent = t.dataset.title || '—';
-        bigId.textContent    = t.dataset.id    || '—';
-        bigRarity.textContent= t.dataset.rarity|| '—';
-        bigColor.textContent = t.dataset.color || '—';
-        bigExtra.textContent = t.dataset.extra || '—';
-        dialog.classList.remove('is-back');
-        openViewer();
-      });
-    });
+document.getElementById('closeBtn').addEventListener('click', () => {
+  document.getElementById('viewer').classList.remove('active');
+  document.getElementById('cardInner').classList.remove('is-flipped');
+});
 
-    // 表/裏 切替
-    const flip = ()=> dialog.classList.toggle('is-back');
-    document.getElementById('flipBtn').addEventListener('click', flip);
-    bigWrap.addEventListener('click', flip);
-
-    // 閉じる
-    document.getElementById('closeBtn').addEventListener('click', closeViewer);
-    viewer.addEventListener('click', (e)=>{ if(e.target === viewer) closeViewer(); });
-    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeViewer(); });
-  </script>
+document.getElementById('cardInner').addEventListener('click', () => {
+  document.getElementById('cardInner').classList.toggle('is-flipped');
+});
+</script>
 </body>
 </html>
