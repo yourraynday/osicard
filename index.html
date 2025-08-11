@@ -1,277 +1,320 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>推し活デジタルトレカ | 縦積みスタイル</title>
-<style>
-:root {
-  --bg: #0b0f17;
-  --card-bg: #111827;
-  --accent: #a78bfa;
-  --ink: #e5e7eb;
-  --muted: #9ca3af;
-  --radius: 16px;
-  --shadow: 0 8px 30px rgba(0,0,0,.35);
-  --card-w: 280px;
-}
-* { box-sizing: border-box; }
-body {
-  margin:0; background: radial-gradient(1200px 700px at 70% -10%, #1f2937 0%, var(--bg) 60%);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans JP;
-  color: var(--ink);
-  display:flex; flex-direction:column; align-items:center; padding: 32px 16px 64px;
-}
-header { text-align:center; margin-bottom: 28px; }
-header h1 { font-size: clamp(20px, 3vw, 32px); margin:0 0 6px; }
-header p { color: var(--muted); margin:0; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>推し活デジタルトレカ | 画像切替＋情報パネル</title>
+  <style>
+    :root{
+      --bg: #0b0f17;
+      --card-bg: #111827;
+      --ink: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #a78bfa;
+      --radius: 16px;
+      --shadow: 0 8px 30px rgba(0,0,0,.35);
+      --card-w: 280px;
+    }
+    *{ box-sizing: border-box; }
+    body{
+      margin:0; background: radial-gradient(1200px 700px at 70% -10%, #1f2937 0%, var(--bg) 60%);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans JP, Arial;
+      color: var(--ink);
+      display:flex; flex-direction:column; align-items:center; padding:32px 16px 64px;
+    }
+    header{ text-align:center; margin-bottom:24px; }
+    header h1{ margin:0 0 6px; font-size:clamp(20px,3vw,32px); }
+    header p{ margin:0; color:var(--muted); }
 
-.grid {
-  width: min(1100px, 100%);
-  display:grid; gap: 28px;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-w)), 1fr));
-}
+    .grid{ width:min(1100px,100%); display:grid; gap:28px; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-w)), 1fr)); }
 
-.card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-}
-.card img {
-  width:100%; height:auto; display:block;
-}
-.panel {
-  padding:12px;
-  background: rgba(255,255,255,.04);
-  border-top: 1px solid rgba(255,255,255,.07);
-}
-.panel .title {
-  font-weight:700;
-  margin-bottom:8px;
-}
-.stats {
-  display:grid; grid-template-columns: 1fr 1fr;
-  gap:8px; font-size:13px;
-}
-.stat {
-  background: rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.07);
-  border-radius:8px;
-  padding:6px;
-}
-.stat .k { color: var(--muted); font-size:11px; }
-.stat .v { font-size:13px; }
-.qr {
-  margin-top:8px;
-  width:80px; height:80px;
-  background:#fff;
-  border-radius:8px;
-  overflow:hidden;
-}
-.qr img { width:100%; height:100%; object-fit:cover; }
-</style>
+    .card{ background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden; display:flex; flex-direction:column; }
+
+    /* 画像切替エリア */
+    .img-wrap{ position:relative; width:100%; aspect-ratio:63/88; overflow:hidden; cursor:pointer; }
+    .img-wrap img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition: opacity .35s ease, transform .35s ease; }
+    .img-wrap .back{ opacity:0; transform: scale(1.02); }
+    .card.is-back .img-wrap .front{ opacity:0; transform: scale(1.02); }
+    .card.is-back .img-wrap .back{ opacity:1; transform: scale(1); }
+
+    /* 上部バッジ（任意） */
+    .badge{ position:absolute; top:10px; left:10px; background: rgba(17,24,39,.7); color:#fff; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.1); backdrop-filter: blur(4px); }
+
+    /* 情報パネル */
+    .panel{ padding:12px; border-top:1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.04); }
+    .title{ font-weight:700; margin-bottom:8px; }
+    .stats{ display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px; }
+    .stat{ background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:6px; }
+    .stat .k{ color:var(--muted); font-size:11px; }
+    .stat .v{ font-size:13px; }
+    .qr{ margin-top:8px; width:80px; height:80px; border-radius:8px; overflow:hidden; background:#fff; }
+    .qr img{ width:100%; height:100%; object-fit:cover; }
+
+    .hint{ color:var(--muted); text-align:center; font-size:12px; padding:8px 0 10px; }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>推し活デジタルトレカ – 画像切替（表⇄裏）＋情報パネル</h1>
+    <p>画像をタップ/クリックで <strong>表⇄裏</strong> を切替。テキスト情報は下のパネルに表示します。</p>
+  </header>
 
-<header>
-  <h1>推し活デジタルトレカ – 縦積みビュー</h1>
-  <p>裏面画像をそのまま表示＋情報パネルで見やすく</p>
-</header>
+  <section class="grid" aria-label="カード一覧">
 
-<section class="grid">
+    <!-- ===== 1〜12枚。画像は front-N.jpg / back-N.jpg をルートに配置 ===== -->
 
-<!-- カード1〜12 -->
-<!-- 各カードごとに front/back と情報を差し替え -->
-<!-- QRは必要なければ削除可 -->
+    <!-- 1 -->
+    <article class="card" data-front="front-1.jpg" data-back="back-1.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード1 表裏切替">
+        <img class="front" src="front-1.jpg" alt="カード1表面">
+        <img class="back"  src="back-1.jpg"  alt="カード1裏面">
+        <span class="badge">#001</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 1</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Debut</div><div class="v">2024.06</div></div>
+          <div class="stat"><div class="k">Color</div><div class="v">Light Purple</div></div>
+          <div class="stat"><div class="k">Unit</div><div class="v">Madopi × Sumire</div></div>
+          <div class="stat"><div class="k">Rarity</div><div class="v">Rare</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-1.jpg" alt="カード1表面">
-  <img src="back-1.jpg" alt="カード1裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 1</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Debut</div><div class="v">2024.06</div></div>
-      <div class="stat"><div class="k">Color</div><div class="v">Light Purple</div></div>
-      <div class="stat"><div class="k">Unit</div><div class="v">Madopi × Sumire</div></div>
-      <div class="stat"><div class="k">Rarity</div><div class="v">Rare</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 2 -->
+    <article class="card" data-front="front-2.jpg" data-back="back-2.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード2 表裏切替">
+        <img class="front" src="front-2.jpg" alt="カード2表面">
+        <img class="back"  src="back-2.jpg"  alt="カード2裏面">
+        <span class="badge">#002</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 2</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Song</div><div class="v">Best Day</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Cool</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#推し活</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">002</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-2.jpg" alt="カード2表面">
-  <img src="back-2.jpg" alt="カード2裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 2</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Song</div><div class="v">Best Day</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Cool</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#推し活</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">002</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 3 -->
+    <article class="card" data-front="front-3.jpg" data-back="back-3.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード3 表裏切替">
+        <img class="front" src="front-3.jpg" alt="カード3表面">
+        <img class="back"  src="back-3.jpg"  alt="カード3裏面">
+        <span class="badge">#003</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 3</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Type</div><div class="v">Limited</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Elegant</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#OshiLove</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">003</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-3.jpg" alt="カード3表面">
-  <img src="back-3.jpg" alt="カード3裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 3</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Type</div><div class="v">Limited</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Elegant</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#OshiLove</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">003</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 4 -->
+    <article class="card" data-front="front-4.jpg" data-back="back-4.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード4 表裏切替">
+        <img class="front" src="front-4.jpg" alt="カード4表面">
+        <img class="back"  src="back-4.jpg"  alt="カード4裏面">
+        <span class="badge">#004</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 4</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Season</div><div class="v">Spring</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Cheerful</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#SpringVibes</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">004</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-4.jpg" alt="カード4表面">
-  <img src="back-4.jpg" alt="カード4裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 4</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Season</div><div class="v">Spring</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Cheerful</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#SpringVibes</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">004</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 5 -->
+    <article class="card" data-front="front-5.jpg" data-back="back-5.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード5 表裏切替">
+        <img class="front" src="front-5.jpg" alt="カード5表面">
+        <img class="back"  src="back-5.jpg"  alt="カード5裏面">
+        <span class="badge">#005</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 5</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Debut</div><div class="v">2023.10</div></div>
+          <div class="stat"><div class="k">Color</div><div class="v">Blue</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#BlueMood</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">005</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-5.jpg" alt="カード5表面">
-  <img src="back-5.jpg" alt="カード5裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 5</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Debut</div><div class="v">2023.10</div></div>
-      <div class="stat"><div class="k">Color</div><div class="v">Blue</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#BlueMood</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">005</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 6 -->
+    <article class="card" data-front="front-6.jpg" data-back="back-6.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード6 表裏切替">
+        <img class="front" src="front-6.jpg" alt="カード6表面">
+        <img class="back"  src="back-6.jpg"  alt="カード6裏面">
+        <span class="badge">#006</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 6</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Type</div><div class="v">Event</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Bright</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#EventDay</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">006</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-6.jpg" alt="カード6表面">
-  <img src="back-6.jpg" alt="カード6裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 6</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Type</div><div class="v">Event</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Bright</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#EventDay</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">006</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 7 -->
+    <article class="card" data-front="front-7.jpg" data-back="back-7.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード7 表裏切替">
+        <img class="front" src="front-7.jpg" alt="カード7表面">
+        <img class="back"  src="back-7.jpg"  alt="カード7裏面">
+        <span class="badge">#007</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 7</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Type</div><div class="v">Limited</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Sweet</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#SweetTime</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">007</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-7.jpg" alt="カード7表面">
-  <img src="back-7.jpg" alt="カード7裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 7</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Type</div><div class="v">Limited</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Sweet</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#SweetTime</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">007</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 8 -->
+    <article class="card" data-front="front-8.jpg" data-back="back-8.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード8 表裏切替">
+        <img class="front" src="front-8.jpg" alt="カード8表面">
+        <img class="back"  src="back-8.jpg"  alt="カード8裏面">
+        <span class="badge">#008</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 8</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Season</div><div class="v">Summer</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Energetic</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#SummerFun</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">008</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-8.jpg" alt="カード8表面">
-  <img src="back-8.jpg" alt="カード8裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 8</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Season</div><div class="v">Summer</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Energetic</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#SummerFun</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">008</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 9 -->
+    <article class="card" data-front="front-9.jpg" data-back="back-9.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード9 表裏切替">
+        <img class="front" src="front-9.jpg" alt="カード9表面">
+        <img class="back"  src="back-9.jpg"  alt="カード9裏面">
+        <span class="badge">#009</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 9</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Type</div><div class="v">Special</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Romantic</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#Romance</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">009</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-9.jpg" alt="カード9表面">
-  <img src="back-9.jpg" alt="カード9裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 9</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Type</div><div class="v">Special</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Romantic</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#Romance</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">009</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 10 -->
+    <article class="card" data-front="front-10.jpg" data-back="back-10.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード10 表裏切替">
+        <img class="front" src="front-10.jpg" alt="カード10表面">
+        <img class="back"  src="back-10.jpg"  alt="カード10裏面">
+        <span class="badge">#010</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 10</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Debut</div><div class="v">2022.05</div></div>
+          <div class="stat"><div class="k">Color</div><div class="v">Pink</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#PinkLove</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">010</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-10.jpg" alt="カード10表面">
-  <img src="back-10.jpg" alt="カード10裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 10</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Debut</div><div class="v">2022.05</div></div>
-      <div class="stat"><div class="k">Color</div><div class="v">Pink</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#PinkLove</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">010</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 11 -->
+    <article class="card" data-front="front-11.jpg" data-back="back-11.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード11 表裏切替">
+        <img class="front" src="front-11.jpg" alt="カード11表面">
+        <img class="back"  src="back-11.jpg"  alt="カード11裏面">
+        <span class="badge">#011</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 11</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Type</div><div class="v">Exclusive</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Chill</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#ChillTime</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">011</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-11.jpg" alt="カード11表面">
-  <img src="back-11.jpg" alt="カード11裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 11</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Type</div><div class="v">Exclusive</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Chill</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#ChillTime</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">011</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+    <!-- 12 -->
+    <article class="card" data-front="front-12.jpg" data-back="back-12.jpg">
+      <div class="img-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="カード12 表裏切替">
+        <img class="front" src="front-12.jpg" alt="カード12表面">
+        <img class="back"  src="back-12.jpg"  alt="カード12裏面">
+        <span class="badge">#012</span>
+      </div>
+      <div class="panel">
+        <div class="title">Oshi Name 12</div>
+        <div class="stats">
+          <div class="stat"><div class="k">Season</div><div class="v">Winter</div></div>
+          <div class="stat"><div class="k">Mood</div><div class="v">Calm</div></div>
+          <div class="stat"><div class="k">Tag</div><div class="v">#WinterVibes</div></div>
+          <div class="stat"><div class="k">ID</div><div class="v">012</div></div>
+        </div>
+        <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
+      </div>
+      <div class="hint">画像タップ/Enterで表⇄裏</div>
+    </article>
 
-<article class="card">
-  <img src="front-12.jpg" alt="カード12表面">
-  <img src="back-12.jpg" alt="カード12裏面">
-  <div class="panel">
-    <div class="title">Oshi Name 12</div>
-    <div class="stats">
-      <div class="stat"><div class="k">Season</div><div class="v">Winter</div></div>
-      <div class="stat"><div class="k">Mood</div><div class="v">Calm</div></div>
-      <div class="stat"><div class="k">Tag</div><div class="v">#WinterVibes</div></div>
-      <div class="stat"><div class="k">ID</div><div class="v">012</div></div>
-    </div>
-    <div class="qr"><img src="qr-sample.png" alt="QRコード"></div>
-  </div>
-</article>
+  </section>
 
-</section>
-
-<footer style="margin-top:40px; font-size:12px; color:var(--muted);">
-  © Fan-made. 非公式ファンアート。画像の権利は各権利者に帰属します。
-</footer>
-
+  <script>
+    // クリック/Enter で front/back をフェード切替
+    document.querySelectorAll('.card').forEach(card => {
+      const wrap = card.querySelector('.img-wrap');
+      const toggle = () => card.classList.toggle('is-back');
+      wrap.addEventListener('click', toggle);
+      wrap.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+      });
+    });
+  </script>
 </body>
 </html>
