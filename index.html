@@ -1,158 +1,265 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>推し活デジタルトレカ</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<!-- ===== セット1：推しA ===== -->
-<div class="section">
-  <h2>推しA</h2>
-  <div class="grid">
-    <div class="card thumb" data-front="cards/front-1.jpg" data-back="cards/back-1.jpg" data-name="推しA" data-info="推しAの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-1.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-2.jpg" data-back="cards/back-2.jpg" data-name="推しA" data-info="推しAの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-2.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-3.jpg" data-back="cards/back-3.jpg" data-name="推しA" data-info="推しAの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-3.jpg" alt="">
-    </div>
-  </div>
-</div>
+<header class="site-header">
+  <h1>推し活デジタルトレカ</h1>
+  <p>一覧3カラム → クリックで詳細（表⇄裏切替）／SNSリンクつき</p>
+</header>
 
-<!-- ===== セット2：推しB ===== -->
-<div class="section">
-  <h2>推しB</h2>
-  <div class="grid">
-    <div class="card thumb" data-front="cards/front-4.jpg" data-back="cards/back-4.jpg" data-name="推しB" data-info="推しBの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-4.jpg" alt="">
+<main>
+  <!-- ===== セット1：#1-3 ===== -->
+  <section class="section"
+    data-insta="https://instagram.com/setA_official"
+    data-tiktok="https://www.tiktok.com/@setA_official"
+    data-x="https://x.com/setA_official">
+    <h2>推しA</h2>
+    <div class="grid">
+      <div class="card thumb"
+        data-front="cards/front-1.jpg" data-back="cards/back-1.jpg"
+        data-name="推しA-1" data-birth="2001-04-03"
+        data-works="ドラマA, MV『Light Purple』, ラジオA" data-ship="A×B">
+        <img src="cards/front-1.jpg" alt="推しA-1 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-2.jpg" data-back="cards/back-2.jpg"
+        data-name="推しA-2" data-birth="2001-04-03"
+        data-works="ドラマB, 舞台B" data-ship="A×C">
+        <img src="cards/front-2.jpg" alt="推しA-2 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-3.jpg" data-back="cards/back-3.jpg"
+        data-name="推しA-3" data-birth="2001-04-03"
+        data-works="映画A, バラエティA" data-ship="A×D">
+        <img src="cards/front-3.jpg" alt="推しA-3 表">
+      </div>
     </div>
-    <div class="card thumb" data-front="cards/front-5.jpg" data-back="cards/back-5.jpg" data-name="推しB" data-info="推しBの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-5.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-6.jpg" data-back="cards/back-6.jpg" data-name="推しB" data-info="推しBの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-6.jpg" alt="">
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- ===== セット3：推しC ===== -->
-<div class="section">
-  <h2>推しC</h2>
-  <div class="grid">
-    <div class="card thumb" data-front="cards/front-7.jpg" data-back="cards/back-7.jpg" data-name="推しC" data-info="推しCの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-7.jpg" alt="">
+  <!-- ===== セット2：#4-6 ===== -->
+  <section class="section"
+    data-insta="https://instagram.com/setB_official"
+    data-tiktok="https://www.tiktok.com/@setB_official"
+    data-x="https://x.com/setB_official">
+    <h2>推しB</h2>
+    <div class="grid">
+      <div class="card thumb"
+        data-front="cards/front-4.jpg" data-back="cards/back-4.jpg"
+        data-name="推しB-1" data-birth="1999-11-12"
+        data-works="ドラマC, 舞台C" data-ship="B×A">
+        <img src="cards/front-4.jpg" alt="推しB-1 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-5.jpg" data-back="cards/back-5.jpg"
+        data-name="推しB-2" data-birth="1999-11-12"
+        data-works="映画B, ラジオB" data-ship="B×C">
+        <img src="cards/front-5.jpg" alt="推しB-2 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-6.jpg" data-back="cards/back-6.jpg"
+        data-name="推しB-3" data-birth="1999-11-12"
+        data-works="MV『Blue Day』" data-ship="B×D">
+        <img src="cards/front-6.jpg" alt="推しB-3 表">
+      </div>
     </div>
-    <div class="card thumb" data-front="cards/front-8.jpg" data-back="cards/back-8.jpg" data-name="推しC" data-info="推しCの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-8.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-9.jpg" data-back="cards/back-9.jpg" data-name="推しC" data-info="推しCの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-9.jpg" alt="">
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- ===== セット4：推しD ===== -->
-<div class="section">
-  <h2>推しD</h2>
-  <div class="grid">
-    <div class="card thumb" data-front="cards/front-10.jpg" data-back="cards/back-10.jpg" data-name="推しD" data-info="推しDの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-10.jpg" alt="">
+  <!-- ===== セット3：#7-9 ===== -->
+  <section class="section"
+    data-insta="https://instagram.com/setC_official"
+    data-tiktok="https://www.tiktok.com/@setC_official"
+    data-x="https://x.com/setC_official">
+    <h2>推しC</h2>
+    <div class="grid">
+      <div class="card thumb"
+        data-front="cards/front-7.jpg" data-back="cards/back-7.jpg"
+        data-name="推しC-1" data-birth="2000-07-01"
+        data-works="ドラマD, 映画C" data-ship="C×A">
+        <img src="cards/front-7.jpg" alt="推しC-1 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-8.jpg" data-back="cards/back-8.jpg"
+        data-name="推しC-2" data-birth="2000-07-01"
+        data-works="MV『Shiny』, 舞台D" data-ship="C×B">
+        <img src="cards/front-8.jpg" alt="推しC-2 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-9.jpg" data-back="cards/back-9.jpg"
+        data-name="推しC-3" data-birth="2000-07-01"
+        data-works="バラエティC" data-ship="C×D">
+        <img src="cards/front-9.jpg" alt="推しC-3 表">
+      </div>
     </div>
-    <div class="card thumb" data-front="cards/front-11.jpg" data-back="cards/back-11.jpg" data-name="推しD" data-info="推しDの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-11.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-12.jpg" data-back="cards/back-12.jpg" data-name="推しD" data-info="推しDの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-12.jpg" alt="">
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- ===== セット5：推しE ===== -->
-<div class="section">
-  <h2>推しE</h2>
-  <div class="grid">
-    <div class="card thumb" data-front="cards/front-13.jpg" data-back="cards/back-13.jpg" data-name="推しE" data-info="推しEの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-13.jpg" alt="">
+  <!-- ===== セット4：#10-12 ===== -->
+  <section class="section"
+    data-insta="https://instagram.com/setD_official"
+    data-tiktok="https://www.tiktok.com/@setD_official"
+    data-x="https://x.com/setD_official">
+    <h2>推しD</h2>
+    <div class="grid">
+      <div class="card thumb"
+        data-front="cards/front-10.jpg" data-back="cards/back-10.jpg"
+        data-name="推しD-1" data-birth="1998-02-21"
+        data-works="ドラマE" data-ship="D×A">
+        <img src="cards/front-10.jpg" alt="推しD-1 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-11.jpg" data-back="cards/back-11.jpg"
+        data-name="推しD-2" data-birth="1998-02-21"
+        data-works="映画D, MV『Mint』" data-ship="D×B">
+        <img src="cards/front-11.jpg" alt="推しD-2 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-12.jpg" data-back="cards/back-12.jpg"
+        data-name="推しD-3" data-birth="1998-02-21"
+        data-works="舞台E" data-ship="D×C">
+        <img src="cards/front-12.jpg" alt="推しD-3 表">
+      </div>
     </div>
-    <div class="card thumb" data-front="cards/front-14.jpg" data-back="cards/back-14.jpg" data-name="推しE" data-info="推しEの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-14.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-15.jpg" data-back="cards/back-15.jpg" data-name="推しE" data-info="推しEの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-15.jpg" alt="">
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- ===== セット6：推しF ===== -->
-<div class="section">
-  <h2>推しF</h2>
-  <div class="grid">
-    <div class="card thumb" data-front="cards/front-16.jpg" data-back="cards/back-16.jpg" data-name="推しF" data-info="推しFの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-16.jpg" alt="">
+  <!-- ===== セット5：#13-15 ===== -->
+  <section class="section"
+    data-insta="https://instagram.com/setE_official"
+    data-tiktok="https://www.tiktok.com/@setE_official"
+    data-x="https://x.com/setE_official">
+    <h2>推しE</h2>
+    <div class="grid">
+      <div class="card thumb"
+        data-front="cards/front-13.jpg" data-back="cards/back-13.jpg"
+        data-name="推しE-1" data-birth="2002-05-05"
+        data-works="映画E, バラエティD" data-ship="E×A">
+        <img src="cards/front-13.jpg" alt="推しE-1 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-14.jpg" data-back="cards/back-14.jpg"
+        data-name="推しE-2" data-birth="2002-05-05"
+        data-works="ドラマF" data-ship="E×B">
+        <img src="cards/front-14.jpg" alt="推しE-2 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-15.jpg" data-back="cards/back-15.jpg"
+        data-name="推しE-3" data-birth="2002-05-05"
+        data-works="MV『Violet』" data-ship="E×C">
+        <img src="cards/front-15.jpg" alt="推しE-3 表">
+      </div>
     </div>
-    <div class="card thumb" data-front="cards/front-17.jpg" data-back="cards/back-17.jpg" data-name="推しF" data-info="推しFの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-17.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-18.jpg" data-back="cards/back-18.jpg" data-name="推しF" data-info="推しFの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-18.jpg" alt="">
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- ===== セット5：推しG ===== -->
-<div class="section">
-  <h2>推しG</h2>
-  <div class="grid">
-    <div class="card thumb" data-front="cards/front-19.jpg" data-back="cards/back-19.jpg" data-name="推しG" data-info="推しGの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-19.jpg" alt="">
+  <!-- ===== セット6：#16-18 ===== -->
+  <section class="section"
+    data-insta="https://instagram.com/setF_official"
+    data-tiktok="https://www.tiktok.com/@setF_official"
+    data-x="https://x.com/setF_official">
+    <h2>推しF</h2>
+    <div class="grid">
+      <div class="card thumb"
+        data-front="cards/front-16.jpg" data-back="cards/back-16.jpg"
+        data-name="推しF-1" data-birth="2003-01-10"
+        data-works="舞台F, ドラマG" data-ship="F×A">
+        <img src="cards/front-16.jpg" alt="推しF-1 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-17.jpg" data-back="cards/back-17.jpg"
+        data-name="推しF-2" data-birth="2003-01-10"
+        data-works="映画F" data-ship="F×B">
+        <img src="cards/front-17.jpg" alt="推しF-2 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-18.jpg" data-back="cards/back-18.jpg"
+        data-name="推しF-3" data-birth="2003-01-10"
+        data-works="バラエティE" data-ship="F×C">
+        <img src="cards/front-18.jpg" alt="推しF-3 表">
+      </div>
     </div>
-    <div class="card thumb" data-front="cards/front-20.jpg" data-back="cards/back-20.jpg" data-name="推しG" data-info="推しGの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-20.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-21.jpg" data-back="cards/back-21.jpg" data-name="推しH" data-info="推しHの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-21.jpg" alt="">
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- ===== セット5：推しH ===== -->
-<div class="section">
-  <h2>推しH</h2>
-  <div class="grid">
-    <div class="card thumb" data-front="cards/front-22.jpg" data-back="cards/back-22.jpg" data-name="推しH" data-info="推しHの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-22.jpg" alt="">
+  <!-- ===== セット7：#19-21 ===== -->
+  <section class="section"
+    data-insta="https://instagram.com/setG_official"
+    data-tiktok="https://www.tiktok.com/@setG_official"
+    data-x="https://x.com/setG_official">
+    <h2>推しG</h2>
+    <div class="grid">
+      <div class="card thumb"
+        data-front="cards/front-19.jpg" data-back="cards/back-19.jpg"
+        data-name="推しG-1" data-birth="1997-09-09"
+        data-works="MV『Stage』, ドラマH" data-ship="G×A">
+        <img src="cards/front-19.jpg" alt="推しG-1 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-20.jpg" data-back="cards/back-20.jpg"
+        data-name="推しG-2" data-birth="1997-09-09"
+        data-works="映画G" data-ship="G×B">
+        <img src="cards/front-20.jpg" alt="推しG-2 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-21.jpg" data-back="cards/back-21.jpg"
+        data-name="推しG-3" data-birth="1997-09-09"
+        data-works="舞台G" data-ship="G×C">
+        <img src="cards/front-21.jpg" alt="推しG-3 表">
+      </div>
     </div>
-    <div class="card thumb" data-front="cards/front-23.jpg" data-back="cards/back-23.jpg" data-name="推しI" data-info="推しIの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-23.jpg" alt="">
-    </div>
-    <div class="card thumb" data-front="cards/front-24.jpg" data-back="cards/back-24.jpg" data-name="推しI" data-info="推しIの説明文" data-insta="https://instagram.com/" data-tiktok="https://tiktok.com/" data-x="https://x.com/">
-      <img src="cards/front-24.jpg" alt="">
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- ===== モーダルビュー ===== -->
+  <!-- ===== セット8：#22-24 ===== -->
+  <section class="section"
+    data-insta="https://instagram.com/setH_official"
+    data-tiktok="https://www.tiktok.com/@setH_official"
+    data-x="https://x.com/setH_official">
+    <h2>推しH</h2>
+    <div class="grid">
+      <div class="card thumb"
+        data-front="cards/front-22.jpg" data-back="cards/back-22.jpg"
+        data-name="推しH-1" data-birth="2004-12-24"
+        data-works="ドラマI" data-ship="H×A">
+        <img src="cards/front-22.jpg" alt="推しH-1 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-23.jpg" data-back="cards/back-23.jpg"
+        data-name="推しH-2" data-birth="2004-12-24"
+        data-works="MV『Pink』" data-ship="H×B">
+        <img src="cards/front-23.jpg" alt="推しH-2 表">
+      </div>
+      <div class="card thumb"
+        data-front="cards/front-24.jpg" data-back="cards/back-24.jpg"
+        data-name="推しH-3" data-birth="2004-12-24"
+        data-works="映画H, 舞台H" data-ship="H×C">
+        <img src="cards/front-24.jpg" alt="推しH-3 表">
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== モーダル ===== -->
 <div class="viewer hidden" id="viewer">
   <div class="dialog">
     <div class="card-inner" id="viewerCard">
-      <div class="face front"><img src="" alt=""></div>
-      <div class="face back"><img src="" alt=""></div>
+      <div class="face front"><img src="" alt="カード表"></div>
+      <div class="face back"><img src="" alt="カード裏"></div>
     </div>
     <div class="panel" id="viewerPanel">
-      <h3 id="viewerName"></h3>
-      <p id="viewerInfo"></p>
+      <h3 id="viewerName">—</h3>
+      <table class="info-table">
+        <tr><th>生年月日</th><td id="fieldBirth">—</td></tr>
+        <tr><th>出演作</th><td id="fieldWorks">—</td></tr>
+        <tr><th>カプ名</th><td id="fieldShip">—</td></tr>
+      </table>
       <div class="sns-links">
-        <a id="linkInsta" href="#" target="_blank"><img src="sns-icon/instagram.png" alt="Instagram"></a>
-        <a id="linkTiktok" href="#" target="_blank"><img src="sns-icon/tiktok.png" alt="TikTok"></a>
-        <a id="linkX" href="#" target="_blank"><img src="sns-icon/x.png" alt="X"></a>
+        <a id="linkInsta" href="#" target="_blank" rel="noopener"><img src="sns-icon/instagram.png" alt="Instagram"></a>
+        <a id="linkTiktok" href="#" target="_blank" rel="noopener"><img src="sns-icon/tiktok.png" alt="TikTok"></a>
+        <a id="linkX" href="#" target="_blank" rel="noopener"><img src="sns-icon/x.png" alt="X"></a>
       </div>
     </div>
-    <button id="closeViewer">×</button>
+    <button id="closeViewer" aria-label="閉じる">×</button>
   </div>
 </div>
 
