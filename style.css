@@ -1,17 +1,12 @@
-/* =========================
-   Global / Variables
-========================= */
 :root{
   --card-bg:#ffffff;
   --text:#333;
   --shadow:0 4px 12px rgba(0,0,0,.2);
-  --ar-w:55;              /* 画像比率 55:83 を維持 */
+  --ar-w:55; /* 55:83 の比率 */
   --ar-h:83;
 }
 
-/* =========================
-   Base
-========================= */
+/* Base */
 *{box-sizing:border-box}
 body{
   margin:0;
@@ -19,9 +14,14 @@ body{
   color:var(--text);
   background:#f4f4f4;
 }
-h2{ margin:12px 0; font-size:1.4rem; }
+.site-header{
+  text-align:center;
+  padding:16px 10px 8px;
+}
+.site-header h1{ margin:0 0 6px; }
+.site-header p{ margin:0; color:#666; font-size:.95rem; }
 
-/* セクション幅（PC80% / タブレット以下90%） */
+/* Section / Grid */
 .section{
   width:80%;
   max-width:1400px;
@@ -30,13 +30,13 @@ h2{ margin:12px 0; font-size:1.4rem; }
 @media (max-width:1024px){
   .section{ width:90%; max-width:none; }
 }
-
-/* =========================
-   Grid（一覧は常に3カラム固定）
-========================= */
+.section h2{
+  margin:12px 0 8px;
+  font-size:1.3rem;
+}
 .grid{
   display:grid;
-  grid-template-columns:repeat(3, 1fr);  /* ★PC/モバイル問わず3列固定 */
+  grid-template-columns:repeat(3, 1fr); /* モバイルもPCも3カラム固定 */
   gap:16px;
 }
 .thumb img{
@@ -48,14 +48,11 @@ h2{ margin:12px 0; font-size:1.4rem; }
   cursor:pointer;
 }
 
-/* =========================
-   Viewer (Modal)
-========================= */
+/* Viewer (Modal) */
 .viewer{
   position:fixed;
   inset:0;
-  width:100%;
-  height:100%;
+  width:100%; height:100%;
   background:rgba(0,0,0,.7);
   display:flex;
   align-items:center;
@@ -64,7 +61,6 @@ h2{ margin:12px 0; font-size:1.4rem; }
 }
 .hidden{ display:none !important; }
 
-/* モーダル本体：モバイルは縦積み、PCは横並び */
 .dialog{
   background:var(--card-bg);
   border-radius:16px;
@@ -75,72 +71,90 @@ h2{ margin:12px 0; font-size:1.4rem; }
   padding:12px;
   position:relative;
   display:flex;
-  flex-direction:column;      /* mobile default */
+  flex-direction:column; /* mobile default */
   gap:12px;
   overflow:hidden;
 }
 @media (min-width:768px){
   .dialog{
     display:grid;
-    grid-template-columns:auto 1fr;  /* 左：カード / 右：情報 */
+    grid-template-columns:auto 1fr; /* 左カード／右情報 */
     align-items:center;
     gap:16px;
   }
 }
 
-/* =========================
-   Card (3D flip)
-========================= */
-/* ★幅を明示して「0幅問題」を防ぐ（これが無いと表示されないことがある） */
+/* Card (3D flip) */
 .card-inner{
   position:relative;
   transform-style:preserve-3d;
   transition:transform .6s;
   aspect-ratio:var(--ar-w) / var(--ar-h);
-  width:min(440px, 46vw);     /* PC：適度な横幅を確保 */
+  width:min(440px, 46vw); /* PCで確実に表示させる幅 */
   height:auto;
   margin:0 auto;
   cursor:pointer;
 }
 @media (max-width:480px){
-  .card-inner{ width:92vw; }  /* モバイル：画面幅にフィット（比率維持） */
+  .card-inner{ width:92vw; } /* モバイルは画面幅にフィット（比率維持） */
 }
-
 .face{
   position:absolute;
   inset:0;
   backface-visibility:hidden;
 }
 .face img{
-  width:100%;
-  height:100%;
+  width:100%; height:100%;
   object-fit:contain;
   border-radius:8px;
 }
 .back{ transform:rotateY(180deg); }
 .card-inner.flipped{ transform:rotateY(180deg); }
 
-/* =========================
-   Panel (Info)
-========================= */
+/* Panel */
 .panel{
   padding:10px;
-  text-align:center;
+  text-align:left;
 }
 .panel h3{ margin:.2rem 0 .6rem; }
 
-.sns-links{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:12px;
-  margin-top:8px;
+/* 情報テーブル */
+.info-table{
+  width:100%;
+  border-collapse:collapse;
+  margin:6px 0 8px;
+  font-size:.95rem;
 }
-.sns-links img{
-  width:32px; height:32px; object-fit:contain; display:block;
+.info-table th,
+.info-table td{
+  border-top:1px solid rgba(0,0,0,.08);
+  padding:8px 6px;
+  text-align:left;
+  vertical-align:top;
+}
+.info-table th{
+  width:7em;
+  color:#555;
+  font-weight:600;
+}
+.info-table tr:first-child th,
+.info-table tr:first-child td{
+  border-top:none;
 }
 
-/* 閉じるボタン（右上） */
+/* SNS Buttons */
+.sns-links{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:10px;
+}
+.sns-links img{
+  width:32px; height:32px; display:block; object-fit:contain;
+}
+.sns-links a.disabled{ opacity:.45; pointer-events:none; }
+
+/* Close button */
 #closeViewer{
   position:absolute;
   top:6px; right:10px;
@@ -151,12 +165,10 @@ h2{ margin:12px 0; font-size:1.4rem; }
   cursor:pointer;
 }
 
-/* =========================
-   Mobile tweaks
-========================= */
+/* Mobile tweaks */
 @media (max-width:480px){
   body{ padding:10px 4px 36px; }
-  .grid{ gap:6px; }                  /* 3カラム維持で隙間だけ圧縮 */
+  .grid{ gap:6px; }            /* 3カラム維持、隙間だけ詰める */
   .section{ margin:8px auto 16px; }
   .thumb img{ border-radius:6px; }
   .dialog{
@@ -166,10 +178,6 @@ h2{ margin:12px 0; font-size:1.4rem; }
     padding:8px;
     gap:8px;
   }
-  .panel{
-    padding:8px;
-  }
-  .sns-links img{
-    width:28px; height:28px;
-  }
+  .panel{ padding:8px; }
+  .sns-links img{ width:28px; height:28px; }
 }
