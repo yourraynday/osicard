@@ -1,20 +1,27 @@
 :root {
   --card-bg: #fff;
-  --shadow: 0 4px 10px rgba(0,0,0,0.15);
+  --shadow: 0 4px 12px rgba(0,0,0,0.2);
   --ar-w: 55;
   --ar-h: 83;
 }
 
-/* 一覧の全体幅 */
-.set {
-  width: 80%;
-  max-width: 1400px;
-  margin: 14px auto 22px;
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #f4f4f4;
+  color: #333;
 }
 
 h2 {
-  font-size: 1.4rem;
-  margin: 0 0 8px;
+  margin: 12px 0;
+  font-size: 1.4em;
+  text-align: left;
+}
+
+.section {
+  width: 80%;
+  max-width: 1400px;
+  margin: 14px auto 22px;
 }
 
 .grid {
@@ -23,31 +30,32 @@ h2 {
   gap: 16px;
 }
 
-.grid img {
+.thumb img {
   width: 100%;
   height: auto;
   object-fit: contain;
-  cursor: pointer;
   border-radius: 8px;
   box-shadow: var(--shadow);
-  background: #f8f8f8;
+  cursor: pointer;
 }
 
-/* モーダル背景 */
 .viewer {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0,0,0,0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
 }
-.viewer.hidden {
-  display: none;
+
+.hidden {
+  display: none !important;
 }
 
-/* モーダル枠 */
 .dialog {
   background: var(--card-bg);
   border-radius: 16px;
@@ -55,86 +63,75 @@ h2 {
   max-width: min(900px, 92vw);
   width: 100%;
   max-height: 96svh;
-  height: auto;
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  padding: 16px;
-  gap: 16px;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  padding: 12px;
+  position: relative;
 }
 
-/* カード反転構造 */
 .card-inner {
-  width: 55mm;
-  height: 83mm;
-  perspective: 1000px;
-  flex-shrink: 0;
+  position: relative;
+  aspect-ratio: var(--ar-w) / var(--ar-h);
+  margin: 0 auto;
   cursor: pointer;
 }
-.card-inner .face {
+
+.face {
+  position: absolute;
   width: 100%;
   height: 100%;
-  position: absolute;
   backface-visibility: hidden;
 }
-.card-inner .front img,
-.card-inner .back img {
+
+.face img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   border-radius: 8px;
 }
-.card-inner .back {
+
+.back {
   transform: rotateY(180deg);
 }
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
 .card-inner {
-  position: relative;
   transform-style: preserve-3d;
   transition: transform 0.6s;
 }
-.card-inner.is-flipped {
-  transform: rotateY(180deg);
+
+.panel {
+  padding: 10px;
+  text-align: center;
 }
 
-/* 情報パネル */
-.panel {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.panel h3 {
-  margin-top: 0;
-}
-.panel div {
-  margin-bottom: 4px;
-}
 .sns-links {
   display: flex;
-  gap: 8px;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
 }
+
 .sns-links img {
   width: 32px;
   height: 32px;
+  object-fit: contain;
 }
 
-/* 閉じるボタン */
 #closeViewer {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: #fff;
+  top: 6px;
+  right: 10px;
+  background: none;
   border: none;
-  padding: 4px 8px;
+  font-size: 1.6rem;
   cursor: pointer;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  box-shadow: var(--shadow);
 }
 
-/* モバイル用 */
+/* モバイル調整 */
 @media (max-width: 480px) {
   body {
     padding: 10px 4px 36px;
@@ -142,27 +139,23 @@ h2 {
   .grid {
     gap: 6px;
   }
-  .set {
-    width: 90%;
+  .section {
     margin: 8px auto 16px;
   }
+  .thumb img {
+    border-radius: 6px;
+  }
   .dialog {
-    flex-direction: column;
-    padding: 8px;
     max-width: 100vw;
     max-height: 100svh;
     border-radius: 12px;
-    gap: 8px;
-  }
-  .card-inner {
-    width: auto;
-    aspect-ratio: var(--ar-w) / var(--ar-h);
-    max-width: 92vw;
-    height: auto;
-    margin: 0 auto;
+    padding: 8px;
   }
   .panel {
-    padding: 10px;
-    min-height: 160px;
+    padding: 8px;
+  }
+  .sns-links img {
+    width: 28px;
+    height: 28px;
   }
 }
